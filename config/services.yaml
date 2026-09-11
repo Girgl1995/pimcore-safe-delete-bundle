@@ -1,0 +1,29 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Factotum\SafeDeleteBundle\Controller\:
+        resource: '../src/Controller'
+        public: true
+        tags: [ 'controller.service_arguments' ]
+
+    Factotum\SafeDeleteBundle\Installer:
+        public: true
+
+    Factotum\SafeDeleteBundle\EventListener\AdminAssetListener:
+        tags:
+            - { name: kernel.event_listener, event: pimcore.admin.js, method: onJsPaths }
+
+    Factotum\SafeDeleteBundle\Config\SafeDeleteConfig: ~
+
+    Factotum\SafeDeleteBundle\DTO\Element\ElementDataFactory: ~
+
+    Factotum\SafeDeleteBundle\DTO\JsInstruction\ParameterBasedJsInstructionDtoFactory: ~
+
+    Factotum\SafeDeleteBundle\Service\DependencyProvider: ~
+
+    Factotum\SafeDeleteBundle\Service\ElementFinder: ~
+
+    Factotum\SafeDeleteBundle\Service\ParameterBasedJsInstructionResolver: ~
