@@ -149,5 +149,3 @@ Of course, it is also possible to select individual elements from different pare
 ## TODO / Development Status
 
 The bundle is currently under development.
-
-At the moment, the Safe Delete functionality is available for Data Objects. Support for Assets and Documents is currently being implemented and will be added accordingly.
