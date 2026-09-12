@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Factotum\SafeDeleteBundle\Controller;
 
-use Exception;
 use Factotum\SafeDeleteBundle\Config\SafeDeleteConfig;
 use Factotum\SafeDeleteBundle\DTO\Element\ElementDataFactory;
-use Factotum\SafeDeleteBundle\Service\DependencyProvider;
 use Factotum\SafeDeleteBundle\Service\ElementFinder;
+use Factotum\SafeDeleteBundle\Service\Provider\Dependency\Factory\DependencyProviderFactory;
+use Factotum\SafeDeleteBundle\Service\Provider\Element\Factory\ElementProviderFactory;
 use Pimcore\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,33 +18,38 @@ class SafeDeleteController extends Controller
 {
     private const REQUEST_SELECTED_ITEMS_KEY = 'selected_items';
     private const INCLUDE_CHILDREN_KEY = 'include_children';
-    private const RESPONSE_KEY_RESULT = 'result';
+    private const ELEMENT_TYPE_KEY = 'element_type';
+    private const RESPONSE_RESULT_KEY = 'result';
 
     /**
      * @param Request $request
      * @param ElementFinder $elementFinder
-     * @param DependencyProvider $dependencyProvider
      * @param ElementDataFactory $elementDataFactory
+     * @param ElementProviderFactory $elementProviderFactory
+     * @param DependencyProviderFactory $dependencyProviderFactory
      * @return JsonResponse
-     * @throws Exception
      */
     #[Route('/admin/safedelete/get-element-dependencies', name: 'get_element_dependencies', options: ['expose' => true], methods: ['GET'])]
     public function getDependenciesAction(
         Request $request,
         ElementFinder $elementFinder,
-        DependencyProvider $dependencyProvider,
         ElementDataFactory $elementDataFactory,
+        ElementProviderFactory $elementProviderFactory,
+        DependencyProviderFactory $dependencyProviderFactory,
     ): JsonResponse {
         $selectedItems = json_decode($request->query->get(self::REQUEST_SELECTED_ITEMS_KEY), true);
-        $includeChildren = json_decode($request->query->get(self::INCLUDE_CHILDREN_KEY), true);
+        $includeChildren = (bool)$request->query->get(self::INCLUDE_CHILDREN_KEY);
+        $elementType = $request->query->get(self::ELEMENT_TYPE_KEY);
 
         $elementDataList = $elementDataFactory->fromArrayCollection($selectedItems);
 
-        $elements = $elementFinder->findElements($elementDataList, $includeChildren);
+        $elementProvider = $elementProviderFactory->getProvider($elementType);
+        $elements = $elementFinder->findElements($elementProvider, $elementDataList, $includeChildren);
 
+        $dependencyProvider = $dependencyProviderFactory->getProvider($elementType);
         $result = $dependencyProvider->getDependencies($elements);
 
-        return new JsonResponse([self::RESPONSE_KEY_RESULT => json_encode($result)]);
+        return new JsonResponse([self::RESPONSE_RESULT_KEY => json_encode($result)]);
     }
 
     /**

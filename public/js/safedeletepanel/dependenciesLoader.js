@@ -4,11 +4,13 @@ pimcore.object.dependenciesLoader = Class.create({
 
     selected_items: {},
     includeChildren: false,
+    elementType: '',
     results: {},
 
-    initialize: function (selected_items, includeChildren) {
+    initialize: function (selected_items, includeChildren, elementType) {
         this.selected_items = selected_items;
         this.includeChildren = includeChildren;
+        this.elementType = elementType;
     },
 
     loadDependencies: function () {
@@ -19,7 +21,8 @@ pimcore.object.dependenciesLoader = Class.create({
 
             params: {
                 selected_items: JSON.stringify(this.selected_items),
-                include_children: this.includeChildren
+                include_children: this.includeChildren,
+                element_type: this.elementType
             },
 
             success: function (response) {

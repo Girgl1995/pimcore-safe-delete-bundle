@@ -9,7 +9,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    private const KEY_INCLUDE_CHILDREN = 'include_children';
+    private const INCLUDE_CHILDREN_KEY = 'include_children';
 
     /**
      * {@inheritdoc}
@@ -21,7 +21,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->booleanNode(self::KEY_INCLUDE_CHILDREN)
+            ->booleanNode(self::INCLUDE_CHILDREN_KEY)
             ->defaultValue(false)
             ->end()
             ->end();

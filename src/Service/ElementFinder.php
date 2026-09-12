@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Factotum\SafeDeleteBundle\Service;
 
-use Factotum\SafeDeleteBundle\Service\Listing\Factory\ListingProviderFactory;
-use Factotum\SafeDeleteBundle\Service\Listing\Interface\ListingProvider;
-use Pimcore\Model\DataObject\Listing;
-use Pimcore\Model\DataObject\Folder;
+use Factotum\SafeDeleteBundle\Service\Provider\Element\Interface\ElementProvider;
 
 class ElementFinder
 {
@@ -22,24 +19,24 @@ class ElementFinder
      * @param bool $includeChildren
      * @return array
      */
-    public function findElements(array $elementDataList, bool $includeChildren): array
+    public function findElements(ElementProvider $elementProvider, array $elementDataList, bool $includeChildren): array
     {
-        $elements = $this->getSelectedElements($elementDataList);
+        $elements = $this->getSelectedElements($elementProvider, $elementDataList);
 
         if (!$includeChildren) {
             return $this->excludeFolders($elements);
         }
 
-        return $this->getAllDescendantElements($elements);
+        return $this->findAllDescendantElements($elementProvider, $elements);
     }
 
     /**
      * @param array $elementDataList
      * @return array
      */
-    private function getSelectedElements(array $elementDataList): array
+    private function getSelectedElements(ElementProvider $elementProvider, array $elementDataList): array
     {
-        $elements = $this->getElementsByIds($this->getIds($elementDataList));
+        $elements = $elementProvider->getElementsByIds($this->getIds($elementDataList));
 
         $selectedElements = [];
         foreach ($elements as $element) {
@@ -52,14 +49,15 @@ class ElementFinder
     }
 
     /**
+     * @param ElementProvider $elementProvider
      * @param array $elements
      * @return array
      */
-    private function getAllDescendantElements(array $elements): array
+    private function findAllDescendantElements(ElementProvider $elementProvider, array $elements): array
     {
         $result = [];
 
-        $children = $this->getChildren($elements);
+        $children = $this->getChildren($elementProvider, $elements);
 
         if (!$children) {
             return $this->excludeFolders($elements);
@@ -70,7 +68,7 @@ class ElementFinder
                 $result[self::ID_PREFIX . strval($child->getId())] = $child;
             }
 
-            $children = $this->getChildren($children);
+            $children = $this->getChildren($elementProvider, $children);
         }
 
         return $this->excludeFolders(array_merge($elements, $result));
@@ -80,7 +78,7 @@ class ElementFinder
      * @param array $elements
      * @return array
      */
-    private function getChildren(array $elements): array
+    private function getChildren(ElementProvider $elementProvider, array $elements): array
     {
         $paths = [];
 
@@ -92,7 +90,7 @@ class ElementFinder
         }
 
         return $paths
-            ? $this->getElementsByPaths($paths)
+            ? $elementProvider->getElementsByPaths($paths)
             : [];
     }
 
@@ -105,24 +103,12 @@ class ElementFinder
         $result = [];
 
         foreach ($entries as $element) {
-            if (!$element instanceof Folder) {
+            if ($element->getType() !== self::TYPE_FOLDER) {
                 $result[] = $element;
             }
         }
 
         return $result;
-    }
-
-    /**
-     * @param mixed $ids
-     * @return array
-     */
-    private function getElementsByIds(array $ids): array
-    {
-        $listing = new Listing();
-        $listing->setCondition(self::CONDITION_IDS, [$ids]);
-
-        return $listing->getData();
     }
 
     /**
@@ -138,17 +124,5 @@ class ElementFinder
         }
 
         return $ids;
-    }
-
-    /**
-     * @param array $paths
-     * @return array
-     */
-    private function getElementsByPaths(array $paths): array
-    {
-        $listing = new Listing();
-        $listing->setCondition(self::CONDITION_PATHS, [$paths]);
-
-        return $listing->getData();
     }
 }

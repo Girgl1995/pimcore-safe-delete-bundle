@@ -22,8 +22,22 @@ services:
 
     Factotum\SafeDeleteBundle\DTO\JsInstruction\ParameterBasedJsInstructionDtoFactory: ~
 
-    Factotum\SafeDeleteBundle\Service\DependencyProvider: ~
-
     Factotum\SafeDeleteBundle\Service\ElementFinder: ~
 
     Factotum\SafeDeleteBundle\Service\ParameterBasedJsInstructionResolver: ~
+
+    Factotum\SafeDeleteBundle\Service\Provider\Element\:
+        resource: '../src/Service/Provider/Element/'
+        tags: [ 'element.provider' ]
+
+    Factotum\SafeDeleteBundle\Service\Provider\Element\Factory\ElementProviderFactory:
+        arguments:
+            $providers: !tagged_iterator element.provider
+
+    Factotum\SafeDeleteBundle\Service\Provider\Dependency\:
+        resource: '../src/Service/Provider/Dependency/'
+        tags: [ 'dependency.provider' ]
+
+    Factotum\SafeDeleteBundle\Service\Provider\Dependency\Factory\DependencyProviderFactory:
+        arguments:
+            $providers: !tagged_iterator dependency.provider

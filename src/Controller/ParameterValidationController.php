@@ -13,10 +13,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ParameterValidationController extends Controller
 {
-    private const RESPONSE_KEY_RESULT = 'result';
-    private const RESPOSNE_KEY_SUCCESS = 'success';
-    private const REQUEST_KEY_ID = 'id';
-    private const REQUEST_KEY_TYPE = 'type';
+    private const RESPONSE_RESULT_KEY = 'result';
+    private const RESPONSE_SUCCESS_KEY = 'success';
+    private const REQUEST_ID_KEY = 'id';
+    private const REQUEST_TYPE_KEY = 'type';
 
     /**
      * @param Request $request
@@ -30,15 +30,15 @@ class ParameterValidationController extends Controller
         ParameterBasedJsInstructionResolver $parameterBasedJsInstructionResolver,
         ParameterBasedJsInstructionDtoFactory $parameterBasedJsInstructionDtoFactory
     ): JsonResponse {
-        $id = $request->query->get(self::REQUEST_KEY_ID);
-        $type = $request->query->get(self::REQUEST_KEY_TYPE);
+        $id = $request->query->get(self::REQUEST_ID_KEY);
+        $type = $request->query->get(self::REQUEST_TYPE_KEY);
 
         $request = $parameterBasedJsInstructionDtoFactory->createRequest($id, $type);
 
         $response = $parameterBasedJsInstructionResolver->resolve($request);
 
         return new JsonResponse(
-            [self::RESPONSE_KEY_RESULT => $response->getAction(), self::RESPOSNE_KEY_SUCCESS => $response->getSuccess()]
+            [self::RESPONSE_RESULT_KEY => $response->getAction(), self::RESPONSE_SUCCESS_KEY => $response->getSuccess()]
         );
     }
 }

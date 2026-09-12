@@ -8,7 +8,10 @@ use Factotum\SafeDeleteBundle\DTO\JsInstruction\ParameterBasedJsInstructionDtoFa
 use Factotum\SafeDeleteBundle\DTO\JsInstruction\ParameterBasedJsInstructionRequest;
 use Factotum\SafeDeleteBundle\DTO\JsInstruction\ParameterBasedJsInstructionResponse;
 use Factotum\SafeDeleteBundle\Exception\InvalidParameterException;
+use Factotum\SafeDeleteBundle\SafeDeleteConstants;
+use Pimcore\Model\Asset;
 use Pimcore\Model\DataObject;
+use Pimcore\Model\Document;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ParameterBasedJsInstructionResolver
@@ -37,14 +40,11 @@ class ParameterBasedJsInstructionResolver
     public function resolve(
         ParameterBasedJsInstructionRequest $request
     ): ParameterBasedJsInstructionResponse {
-        $id = $request->getId();
-        $type = $request->getType();
-
         try {
-            $this->validate($id, $type);
+            $this->validate($request);
 
             return $this->parameterBasedJsInstructionDtoFactory->createResponse(
-                $this->buildSuccessExecString($id, $type),
+                $this->buildSuccessExecString($request),
                 true
             );
         } catch (InvalidParameterException $exception) {
@@ -56,45 +56,79 @@ class ParameterBasedJsInstructionResolver
     }
 
     /**
-     * @param string $id
-     * @param string $type
+     * @param ParameterBasedJsInstructionRequest $request
      * @return void
      * @throws InvalidParameterException
      */
-    private function validate(string $id, string $type): void
+    private function validate(ParameterBasedJsInstructionRequest $request): void
     {
-        $this->validateId($id);
-        $this->validateType($type);
+        $this->validateType($request);
+        $this->validateId($request);
+        $this->validateElementExistence($request);
     }
 
     /**
-     * @param string $id
+     * @param ParameterBasedJsInstructionRequest $request
+     * @return void
+     */
+    private function validateElementExistence(ParameterBasedJsInstructionRequest $request): void
+    {
+        $id = $request->getId();
+        if ($request->getType() === SafeDeleteConstants::TYPE_OBJECT) {
+            if (!DataObject::getById($id)) {
+                throw new InvalidParameterException(
+                    $this->translateError(self::ELEMENT_NOT_FOUND_MESSAGE_KEY, $id)
+                );
+            }
+        }
+
+        if ($request->getType() === SafeDeleteConstants::TYPE_DOCUMENT) {
+            if (!Document::getById($id)) {
+                throw new InvalidParameterException(
+                    $this->translateError(self::ELEMENT_NOT_FOUND_MESSAGE_KEY, $id)
+                );
+            }
+        }
+
+        if ($request->getType() === SafeDeleteConstants::TYPE_ASSET) {
+            if (!Asset::getById($id)) {
+                throw new InvalidParameterException(
+                    $this->translateError(self::ELEMENT_NOT_FOUND_MESSAGE_KEY, $id)
+                );
+            }
+        }
+    }
+
+    /**
+     * @param ParameterBasedJsInstructionRequest $request
      * @return void
      * @throws InvalidParameterException
      */
-    private function validateId(string $id): void
+    private function validateId(ParameterBasedJsInstructionRequest $request): void
     {
+        $id = $request->getId();
+
         if (!ctype_digit($id)) {
             throw new InvalidParameterException(
                 $this->translateError(self::INVALID_ID_ERROR_MESSAGE_KEY, $id)
             );
         }
-
-        if (!DataObject::getById($id)) {
-            throw new InvalidParameterException(
-                $this->translateError(self::ELEMENT_NOT_FOUND_MESSAGE_KEY, $id)
-            );
-        }
     }
 
     /**
-     * @param string $type
+     * @param ParameterBasedJsInstructionRequest $request
      * @return void
      * @throws InvalidParameterException
      */
-    private function validateType(string $type): void
+    private function validateType(ParameterBasedJsInstructionRequest $request): void
     {
-        if (!in_array($type, DataObject::getTypes(), true)) {
+        $type = $request->getType();
+
+        if (!in_array(
+            $type,
+            [SafeDeleteConstants::TYPE_DOCUMENT, SafeDeleteConstants::TYPE_ASSET, SafeDeleteConstants::TYPE_OBJECT],
+            true
+        )) {
             throw new InvalidParameterException(
                 $this->translateError(self::INVALID_TYPE_ERROR_MESSAGE_KEY, $type)
             );
@@ -127,12 +161,14 @@ class ParameterBasedJsInstructionResolver
     }
 
     /**
-     * @param string $id
-     * @param string $type
+     * @param ParameterBasedJsInstructionRequest $request
      * @return string
      */
-    private function buildSuccessExecString(string $id, string $type): string
+    private function buildSuccessExecString(ParameterBasedJsInstructionRequest $request): string
     {
+        $id = $request->getId();
+        $type = $request->getType();
+
         return sprintf(
             self::SUCCESS_INSTRUCTION,
             $id,

@@ -15,7 +15,7 @@ class Extension extends SymfonyExtension
     public const BUNDLE_ALIAS = 'factotum_safe_delete';
     private const CONFIG_DIR = '/../../config';
     private const CONFIG_FILE = 'services.yaml';
-    private const SAFE_DELETE_CONFIG_NAMESPACE = 'Factotum\SafeDeleteBundle\Config\SafeDeleteConfig';
+    private const SAFE_DELETE_CONFIG_CLASS_PATH = 'Factotum\SafeDeleteBundle\Config\SafeDeleteConfig';
     private const CONFIG_ATTRIBUTE = '$config';
     private const CONFIG_INCLUDE_CHILDREN_KEY = 'include_children';
 
@@ -37,7 +37,7 @@ class Extension extends SymfonyExtension
 
         $loader->load(self::CONFIG_FILE);
 
-        $safeDeleteConfigDefinition = $container->getDefinition(self::SAFE_DELETE_CONFIG_NAMESPACE);
+        $safeDeleteConfigDefinition = $container->getDefinition(self::SAFE_DELETE_CONFIG_CLASS_PATH);
 
         $argument = [
             self::CONFIG_ATTRIBUTE => [

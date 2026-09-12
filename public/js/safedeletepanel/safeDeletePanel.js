@@ -76,11 +76,20 @@ pimcore.object.safeDeletePanel = Class.create({
                 store
             );
 
+            let icon = '';
+            let iconCls = '';
+            if(store.config.type === 'object') {
+                icon = store.config.icon;
+            } else {
+                iconCls = store.config.icon
+            }
+
             return {
                 title: this.getTabTitle(store),
                 layout: "fit",
                 border: false,
-                icon: store.config.icon,
+                icon: icon,
+                iconCls: iconCls,
 
                 items: [
                     dependencyPanel.buildPanel()
@@ -92,7 +101,8 @@ pimcore.object.safeDeletePanel = Class.create({
     buildDependencyStores: function () {
         const dependencies = new pimcore.object.dependenciesLoader(
             this.res.itemResults,
-            this.includeChildren
+            this.includeChildren,
+            this.options.elementType
         );
 
         return dependencies.loadDependencies();

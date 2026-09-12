@@ -55,6 +55,7 @@ function showDeleteConfirmation(window, res, options, message) {
 
 function buildDeleteMessage(res) {
     const firstItem = res.itemResults?.[0];
+
     const messageParts = [];
 
     messageParts.push(buildBaseDeleteMessage(res));
