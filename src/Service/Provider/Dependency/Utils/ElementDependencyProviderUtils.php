@@ -11,7 +11,7 @@ use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Model\Document;
 use Pimcore\Model\Element\AbstractElement;
 
-class DependencyProviderUtils
+class ElementDependencyProviderUtils
 {
     /**
      * @param AbstractElement $object
@@ -76,15 +76,15 @@ class DependencyProviderUtils
     public static function getIcon(AbstractElement $element): string
     {
         if ($element instanceof Document) {
-            return DependencyProviderUtils::getDocumentIcon($element);
+            return ElementDependencyProviderUtils::getDocumentIcon($element);
         }
 
         if ($element instanceof Asset) {
-            return DependencyProviderUtils::getAssetIcon($element);
+            return ElementDependencyProviderUtils::getAssetIcon($element);
         }
 
         if ($element instanceof DataObject) {
-            return DependencyProviderUtils::getObjectIcon($element);
+            return ElementDependencyProviderUtils::getObjectIcon($element);
         }
     }
 
@@ -112,12 +112,7 @@ class DependencyProviderUtils
      */
     public static function getDocumentIcon(AbstractElement $element): string
     {
-        $icon = SafeDeleteConstants::PIMCORE_DEFAULT_ASSET_ICON;
-
-        $fileExt = $element->getType();
-        if ($fileExt) {
-            $icon .= ' ' . SafeDeleteConstants::PIMCORE_ICON_PREFIX . strtolower($fileExt);
-        }
+        $icon = SafeDeleteConstants::PIMCORE_ICON_PREFIX . strtolower($element->getType());
 
         return $icon;
     }
@@ -125,6 +120,7 @@ class DependencyProviderUtils
     /**
      * @param AbstractElement $element
      * @return string
+     * @throws \Exception
      */
     public static function getObjectIcon(AbstractElement $element): string
     {

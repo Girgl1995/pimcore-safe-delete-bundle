@@ -34,4 +34,4 @@ services:
         arguments:
             $providers: !tagged_iterator element.provider
 
-    Factotum\SafeDeleteBundle\Service\Provider\Dependency\DependencyProvider: ~
+    Factotum\SafeDeleteBundle\Service\Provider\Dependency\ElementDependencyProvider: ~

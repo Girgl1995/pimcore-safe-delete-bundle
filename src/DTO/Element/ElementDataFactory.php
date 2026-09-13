@@ -25,17 +25,6 @@ class ElementDataFactory
     }
 
     /**
-     * @param AbstractElement $element
-     * @return ElementData
-     */
-    public function fromElement(AbstractElement $element): ElementData
-    {
-        return new ElementData(
-            $element->getId(), $element->getType(), $element->getKey(), $element->getPath()
-        );
-    }
-
-    /**
      * @param array $data
      * @return array
      */
@@ -43,18 +32,6 @@ class ElementDataFactory
     {
         return array_map(
             fn(array $item): ElementData => $this->fromArray($item),
-            $data
-        );
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     */
-    public function fromElementCollection(array $data): array
-    {
-        return array_map(
-            fn(AbstractElement $item): ElementData => $this->fromElement($item),
             $data
         );
     }

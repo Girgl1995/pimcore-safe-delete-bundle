@@ -7,7 +7,7 @@ namespace Factotum\SafeDeleteBundle\Controller;
 use Factotum\SafeDeleteBundle\Config\SafeDeleteConfig;
 use Factotum\SafeDeleteBundle\DTO\Element\ElementDataFactory;
 use Factotum\SafeDeleteBundle\Service\ElementFinder;
-use Factotum\SafeDeleteBundle\Service\Provider\Dependency\DependencyProvider;
+use Factotum\SafeDeleteBundle\Service\Provider\Dependency\ElementDependencyProvider;
 use Factotum\SafeDeleteBundle\Service\Provider\Element\Factory\ElementProviderFactory;
 use Pimcore\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,54 +17,38 @@ use Symfony\Component\Routing\Attribute\Route;
 class SafeDeleteController extends Controller
 {
     private const REQUEST_SELECTED_ITEMS_KEY = 'selected_items';
-    private const INCLUDE_CHILDREN_KEY = 'include_children';
     private const ELEMENT_TYPE_KEY = 'element_type';
     private const RESPONSE_RESULT_KEY = 'result';
 
     /**
      * @param Request $request
-     * @param ElementFinder $elementFinder
-     * @param ElementDataFactory $elementDataFactory
+     * @param SafeDeleteConfig $safeDeleteConfig
      * @param ElementProviderFactory $elementProviderFactory
-     * @param DependencyProviderFactory $dependencyProviderFactory
+     * @param ElementDataFactory $elementDataFactory
+     * @param ElementFinder $elementFinder
+     * @param ElementDependencyProvider $elementDependencyProvider
      * @return JsonResponse
      */
     #[Route('/admin/safedelete/get-element-dependencies', name: 'get_element_dependencies', options: ['expose' => true], methods: ['GET'])]
     public function getDependenciesAction(
         Request $request,
-        ElementFinder $elementFinder,
-        ElementDataFactory $elementDataFactory,
-        ElementProviderFactory $elementProviderFactory,
-        DependencyProvider $dependencyProvider,
         SafeDeleteConfig $safeDeleteConfig,
+        ElementProviderFactory $elementProviderFactory,
+        ElementDataFactory $elementDataFactory,
+        ElementFinder $elementFinder,
+        ElementDependencyProvider $elementDependencyProvider,
     ): JsonResponse {
         $selectedItems = json_decode($request->query->get(self::REQUEST_SELECTED_ITEMS_KEY), true);
         $elementType = $request->query->get(self::ELEMENT_TYPE_KEY);
 
-        $includeChildren = $safeDeleteConfig->getincludeChildren();
-
-        $elementDataList = $elementDataFactory->fromArrayCollection($selectedItems);
-
         $elementProvider = $elementProviderFactory->getProvider($elementType);
+        $elementDataList = $elementDataFactory->fromArrayCollection($selectedItems);
+        $includeChildren = $safeDeleteConfig->getIncludeChildren();
+
         $elements = $elementFinder->findElements($elementProvider, $elementDataList, $includeChildren);
 
-        $result = $dependencyProvider->getDependencies($elements);
+        $result = $elementDependencyProvider->getDependencies($elements);
 
         return new JsonResponse([self::RESPONSE_RESULT_KEY => json_encode($result)]);
-    }
-
-    /**
-     * @param Request $request
-     * @param SafeDeleteConfig $config
-     * @return JsonResponse
-     */
-    #[Route('/admin/safedelete/check-config', name: 'check_config', options: ['expose' => true], methods: ['GET'])]
-    public function checkConfigAction(Request $request, SafeDeleteConfig $config): JsonResponse
-    {
-        return new JsonResponse(
-            [
-                self::INCLUDE_CHILDREN_KEY => $config->getincludeChildren(),
-            ]
-        );
     }
 }

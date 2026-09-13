@@ -8,8 +8,6 @@ use Factotum\SafeDeleteBundle\Service\Provider\Element\Interface\ElementProvider
 
 class ElementFinder
 {
-    private const CONDITION_IDS = '`id` IN (?)';
-    private const CONDITION_PATHS = '`path` IN (?)';
     private const TYPE_FOLDER = 'folder';
     private const ID_PREFIX = 'id_';
     private const ROOT_DIRECTORY = '/';
@@ -27,7 +25,7 @@ class ElementFinder
             return $this->excludeFolders($elements);
         }
 
-        return $this->findAllDescendantElements($elementProvider, $elements);
+        return $this->findDescendants($elementProvider, $elements);
     }
 
     /**
@@ -53,7 +51,7 @@ class ElementFinder
      * @param array $elements
      * @return array
      */
-    private function findAllDescendantElements(ElementProvider $elementProvider, array $elements): array
+    private function findDescendants(ElementProvider $elementProvider, array $elements): array
     {
         $result = [];
 

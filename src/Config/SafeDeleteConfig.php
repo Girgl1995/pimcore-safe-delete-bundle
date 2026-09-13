@@ -18,7 +18,7 @@ class SafeDeleteConfig
     /**
      * @return bool
      */
-    public function getincludeChildren(): bool
+    public function getIncludeChildren(): bool
     {
         return $this->config[self::CONFIG_CHILDREN_KEY];
     }
