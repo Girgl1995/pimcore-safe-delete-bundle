@@ -7,7 +7,7 @@ namespace Factotum\SafeDeleteBundle\Controller;
 use Factotum\SafeDeleteBundle\Config\SafeDeleteConfig;
 use Factotum\SafeDeleteBundle\DTO\Element\ElementDataFactory;
 use Factotum\SafeDeleteBundle\Service\ElementFinder;
-use Factotum\SafeDeleteBundle\Service\Provider\Dependency\Factory\DependencyProviderFactory;
+use Factotum\SafeDeleteBundle\Service\Provider\Dependency\DependencyProvider;
 use Factotum\SafeDeleteBundle\Service\Provider\Element\Factory\ElementProviderFactory;
 use Pimcore\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,18 +35,19 @@ class SafeDeleteController extends Controller
         ElementFinder $elementFinder,
         ElementDataFactory $elementDataFactory,
         ElementProviderFactory $elementProviderFactory,
-        DependencyProviderFactory $dependencyProviderFactory,
+        DependencyProvider $dependencyProvider,
+        SafeDeleteConfig $safeDeleteConfig,
     ): JsonResponse {
         $selectedItems = json_decode($request->query->get(self::REQUEST_SELECTED_ITEMS_KEY), true);
-        $includeChildren = (bool)$request->query->get(self::INCLUDE_CHILDREN_KEY);
         $elementType = $request->query->get(self::ELEMENT_TYPE_KEY);
+
+        $includeChildren = $safeDeleteConfig->getincludeChildren();
 
         $elementDataList = $elementDataFactory->fromArrayCollection($selectedItems);
 
         $elementProvider = $elementProviderFactory->getProvider($elementType);
         $elements = $elementFinder->findElements($elementProvider, $elementDataList, $includeChildren);
 
-        $dependencyProvider = $dependencyProviderFactory->getProvider($elementType);
         $result = $dependencyProvider->getDependencies($elements);
 
         return new JsonResponse([self::RESPONSE_RESULT_KEY => json_encode($result)]);

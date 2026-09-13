@@ -34,10 +34,4 @@ services:
         arguments:
             $providers: !tagged_iterator element.provider
 
-    Factotum\SafeDeleteBundle\Service\Provider\Dependency\:
-        resource: '../src/Service/Provider/Dependency/'
-        tags: [ 'dependency.provider' ]
-
-    Factotum\SafeDeleteBundle\Service\Provider\Dependency\Factory\DependencyProviderFactory:
-        arguments:
-            $providers: !tagged_iterator dependency.provider
+    Factotum\SafeDeleteBundle\Service\Provider\Dependency\DependencyProvider: ~

@@ -7,13 +7,10 @@ pimcore.elementservice.deleteElementCheckDependencyComplete = function (window, 
             return;
         }
 
-        const includeChildren = getincludeChildren();
-
         const safeDeletePanel = new pimcore.object.safeDeletePanel(
             res,
             options,
             message,
-            includeChildren
         );
 
         safeDeletePanel.getLayout();
@@ -21,23 +18,6 @@ pimcore.elementservice.deleteElementCheckDependencyComplete = function (window, 
         console.error("Error while checking delete dependencies:", error);
     }
 };
-
-function getincludeChildren() {
-    let includeChildren = false;
-
-    Ext.Ajax.request({
-        async: false,
-        url: Routing.generate("check_config"),
-        method: "GET",
-
-        success: function (response) {
-            const result = Ext.decode(response.responseText);
-            includeChildren = Boolean(result.include_children);
-        }
-    });
-
-    return includeChildren;
-}
 
 function showDeleteConfirmation(window, res, options, message) {
     Ext.MessageBox.show({

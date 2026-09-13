@@ -2,7 +2,7 @@
 
 namespace Factotum\SafeDeleteBundle\Service\Provider\Element\Interface;
 
-use Factotum\SafeDeleteBundle\Service\Interface\ProviderInterface;
+use Factotum\SafeDeleteBundle\Service\Provider\Interface\ProviderInterface;
 
 interface ElementProvider extends ProviderInterface
 {

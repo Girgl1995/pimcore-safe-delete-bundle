@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Factotum\SafeDeleteBundle\Service\Provider\Dependency\Utils;
 
+use Factotum\SafeDeleteBundle\SafeDeleteConstants;
+use Pimcore\Model\Asset;
+use Pimcore\Model\DataObject;
+use Pimcore\Model\DataObject\ClassDefinition;
+use Pimcore\Model\Document;
 use Pimcore\Model\Element\AbstractElement;
 
 class DependencyProviderUtils
@@ -37,11 +42,97 @@ class DependencyProviderUtils
      */
     public static function getClassName(AbstractElement $element): string
     {
-        $namesSpace = get_class($element);
-        if ($pos = strrpos($namesSpace, '\\')) {
-            return substr($namesSpace, $pos + 1);
+        $className = get_class($element);
+        if ($pos = strrpos($className, '\\')) {
+            return substr($className, $pos + 1);
         }
 
         return '';
+    }
+
+    /**
+     * @param AbstractElement $element
+     * @return string
+     */
+    public static function getType(AbstractElement $element): string
+    {
+        if ($element instanceof Document) {
+            return SafeDeleteConstants::TYPE_DOCUMENT;
+        }
+
+        if ($element instanceof Asset) {
+            return SafeDeleteConstants::TYPE_ASSET;
+        }
+
+        if ($element instanceof DataObject) {
+            return SafeDeleteConstants::TYPE_OBJECT;
+        }
+    }
+
+    /**
+     * @param AbstractElement $element
+     * @return string
+     */
+    public static function getIcon(AbstractElement $element): string
+    {
+        if ($element instanceof Document) {
+            return DependencyProviderUtils::getDocumentIcon($element);
+        }
+
+        if ($element instanceof Asset) {
+            return DependencyProviderUtils::getAssetIcon($element);
+        }
+
+        if ($element instanceof DataObject) {
+            return DependencyProviderUtils::getObjectIcon($element);
+        }
+    }
+
+    /**
+     * @param AbstractElement $element
+     * @return string
+     */
+    public static function getAssetIcon(AbstractElement $element): string
+    {
+        $icon = SafeDeleteConstants::PIMCORE_DEFAULT_ASSET_ICON;
+
+        $fileExt = pathinfo($element->getFilename(), PATHINFO_EXTENSION);
+        if ($fileExt) {
+            $icon .= ' ' . SafeDeleteConstants::PIMCORE_ICON_PREFIX . strtolower(
+                    pathinfo($element->getFilename(), PATHINFO_EXTENSION)
+                );
+        }
+
+        return $icon;
+    }
+
+    /**
+     * @param AbstractElement $element
+     * @return string
+     */
+    public static function getDocumentIcon(AbstractElement $element): string
+    {
+        $icon = SafeDeleteConstants::PIMCORE_DEFAULT_ASSET_ICON;
+
+        $fileExt = $element->getType();
+        if ($fileExt) {
+            $icon .= ' ' . SafeDeleteConstants::PIMCORE_ICON_PREFIX . strtolower($fileExt);
+        }
+
+        return $icon;
+    }
+
+    /**
+     * @param AbstractElement $element
+     * @return string
+     */
+    public static function getObjectIcon(AbstractElement $element): string
+    {
+        $classDefinition = ClassDefinition::getById($element->getClassId());
+
+        $icon = $classDefinition->getIcon();
+        $icon = $icon != null ? $icon : SafeDeleteConstants::DEFAULT_ICON_PATH;
+
+        return $icon;
     }
 }

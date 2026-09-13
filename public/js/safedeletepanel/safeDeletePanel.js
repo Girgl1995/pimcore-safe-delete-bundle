@@ -5,16 +5,14 @@ pimcore.object.safeDeletePanel = Class.create({
     res: {},
     options: {},
     message: "",
-    includeChildren: false,
 
     form: null,
     window: null,
 
-    initialize: function (res, options, message, includeChildren) {
+    initialize: function (res, options, message) {
         this.res = res;
         this.options = options;
         this.message = message;
-        this.includeChildren = includeChildren;
     },
 
     buildForm: function () {
@@ -101,7 +99,6 @@ pimcore.object.safeDeletePanel = Class.create({
     buildDependencyStores: function () {
         const dependencies = new pimcore.object.dependenciesLoader(
             this.res.itemResults,
-            this.includeChildren,
             this.options.elementType
         );
 

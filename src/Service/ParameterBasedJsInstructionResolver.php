@@ -74,7 +74,9 @@ class ParameterBasedJsInstructionResolver
     private function validateElementExistence(ParameterBasedJsInstructionRequest $request): void
     {
         $id = $request->getId();
-        if ($request->getType() === SafeDeleteConstants::TYPE_OBJECT) {
+        $type = $request->getType();
+
+        if ($type === SafeDeleteConstants::TYPE_OBJECT) {
             if (!DataObject::getById($id)) {
                 throw new InvalidParameterException(
                     $this->translateError(self::ELEMENT_NOT_FOUND_MESSAGE_KEY, $id)
@@ -82,7 +84,7 @@ class ParameterBasedJsInstructionResolver
             }
         }
 
-        if ($request->getType() === SafeDeleteConstants::TYPE_DOCUMENT) {
+        if ($type === SafeDeleteConstants::TYPE_DOCUMENT) {
             if (!Document::getById($id)) {
                 throw new InvalidParameterException(
                     $this->translateError(self::ELEMENT_NOT_FOUND_MESSAGE_KEY, $id)
@@ -90,7 +92,7 @@ class ParameterBasedJsInstructionResolver
             }
         }
 
-        if ($request->getType() === SafeDeleteConstants::TYPE_ASSET) {
+        if ($type === SafeDeleteConstants::TYPE_ASSET) {
             if (!Asset::getById($id)) {
                 throw new InvalidParameterException(
                     $this->translateError(self::ELEMENT_NOT_FOUND_MESSAGE_KEY, $id)
