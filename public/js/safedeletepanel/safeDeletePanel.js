@@ -74,26 +74,27 @@ pimcore.object.safeDeletePanel = Class.create({
                 store
             );
 
-            let icon = '';
-            let iconCls = '';
-            if(store.config.type === 'object') {
-                icon = store.config.icon;
-            } else {
-                iconCls = store.config.icon
-            }
-
-            return {
-                title: this.getTabTitle(store),
-                layout: "fit",
-                border: false,
-                icon: icon,
-                iconCls: iconCls,
-
-                items: [
-                    dependencyPanel.buildPanel()
-                ]
-            };
+            return this.buildTab(store, dependencyPanel);
         }.bind(this));
+    },
+
+    buildTab: function (store, dependencyPanel) {
+        const tab = {
+            title: this.getTabTitle(store),
+            layout: "fit",
+            border: false,
+            items: [
+                dependencyPanel.buildPanel()
+            ]
+        };
+
+        if (store.config.type === 'object') {
+            tab['icon'] = store.config.icon;
+        } else {
+            tab['iconCls'] = store.config.icon;
+        }
+
+        return tab;
     },
 
     buildDependencyStores: function () {

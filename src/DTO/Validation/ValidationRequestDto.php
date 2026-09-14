@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Factotum\SafeDeleteBundle\DTO\JsInstruction;
+namespace Factotum\SafeDeleteBundle\DTO\Validation;
 
-readonly class ParameterBasedJsInstructionRequest
+readonly class ValidationRequestDto
 {
     /**
      * @param string $id

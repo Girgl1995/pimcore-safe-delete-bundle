@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Factotum\SafeDeleteBundle\DTO\Element;
 
-use Pimcore\Model\Element\AbstractElement;
-
 class ElementDataFactory
 {
     private const ID_KEY = 'id';

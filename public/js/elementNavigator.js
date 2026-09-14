@@ -2,6 +2,12 @@ function getSearchParameters() {
     return Object.fromEntries(new URLSearchParams(window.location.search));
 }
 
+function urlHasSearchParameters() {
+    const searchParams = getSearchParameters();
+
+    return searchParams.elementId && searchParams.type;
+}
+
 function setPointerEvents(enabled) {
     document.documentElement.style.pointerEvents = enabled ? "auto" : "none";
 }
@@ -28,21 +34,17 @@ function waitForActiveTab(callback, interval = 100) {
 }
 
 function openElementFromUrl() {
-    const { elementId, type } = getSearchParameters();
-
-    if (!elementId) {
-        return;
-    }
+    const searchParams = getSearchParameters();
 
     let success = false;
 
     Ext.Ajax.request({
         async: false,
-        url: Routing.generate("check_parameter"),
+        url: Routing.generate("validate_parameter_values"),
         method: "GET",
         params: {
-            id: elementId,
-            type: type
+            id: searchParams.elementId,
+            type: searchParams.type
         },
 
         success: function (response) {
@@ -65,9 +67,7 @@ function openElementFromUrl() {
 }
 
 function init() {
-    const { elementId } = getSearchParameters();
-
-    if (!elementId) {
+    if (!urlHasSearchParameters()) {
         return;
     }
 
@@ -75,11 +75,11 @@ function init() {
 }
 
 Ext.onReady(() => {
-    const { elementId } = getSearchParameters();
-
-    if (elementId) {
-        setPointerEvents(false);
+    if (!urlHasSearchParameters()) {
+        return;
     }
+
+    setPointerEvents(false);
 });
 
 window.addEventListener("load", init);

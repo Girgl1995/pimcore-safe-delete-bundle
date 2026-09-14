@@ -34,7 +34,7 @@ class ElementFinder
      */
     private function getSelectedElements(ElementProvider $elementProvider, array $elementDataList): array
     {
-        $elements = $elementProvider->getElementsByIds($this->getIds($elementDataList));
+        $elements = $elementProvider->getElementsByIds($this->getElementIds($elementDataList));
 
         $selectedElements = [];
         foreach ($elements as $element) {
@@ -113,7 +113,7 @@ class ElementFinder
      * @param array $elementDataList
      * @return array
      */
-    private function getIds(array $elementDataList): array
+    private function getElementIds(array $elementDataList): array
     {
         $ids = [];
 

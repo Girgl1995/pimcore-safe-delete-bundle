@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Factotum\SafeDeleteBundle\DTO\JsInstruction;
+namespace Factotum\SafeDeleteBundle\DTO\Validation;
 
-readonly class ParameterBasedJsInstructionResponse
+readonly class ValidationResponseDto
 {
     /**
      * @param string $action

@@ -14,26 +14,26 @@ use Pimcore\Model\Element\AbstractElement;
 class ElementDependencyProviderUtils
 {
     /**
+     * @param array $elements
      * @param AbstractElement $object
-     * @param array $result
      * @return string
      */
-    public static function generateKey(AbstractElement $object, array $result): string
+    public static function generateUniqueArrayKeyForElement(array $elements, AbstractElement $object): string
     {
-        $objectKey = $object->getKey();
+        $elementKey = $object->getKey();
 
-        if (!array_key_exists($objectKey, $result)) {
-            return $objectKey;
+        if (!array_key_exists($elementKey, $elements)) {
+            return $elementKey;
         }
 
         $count = 0;
-        foreach ($result as $key => $value) {
-            if ($objectKey === $key) {
+        foreach ($elements as $key => $value) {
+            if ($elementKey === $key) {
                 $count++;
             }
         }
 
-        return $key .= $count;
+        return $elementKey .= $count;
     }
 
     /**

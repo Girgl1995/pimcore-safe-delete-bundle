@@ -14,14 +14,14 @@ use Pimcore\Model\Element\AbstractElement;
 
 class ElementDependencyProvider
 {
-    protected const ID_KEY = 'id';
-    protected const NAME_KEY = 'name';
-    protected const TYPE_KEY = 'type';
-    protected const PATH_KEY = 'path';
-    protected const SUBTYPE_KEY = 'subtype';
-    protected const DATA_KEY = 'data';
-    protected const ICON_KEY = 'icon';
-    protected const KEY_KEY = 'key';
+    private const ID_KEY = 'id';
+    private const NAME_KEY = 'name';
+    private const TYPE_KEY = 'type';
+    private const PATH_KEY = 'path';
+    private const SUBTYPE_KEY = 'subtype';
+    private const DATA_KEY = 'data';
+    private const ICON_KEY = 'icon';
+    private const KEY_KEY = 'key';
 
     /**
      * @param array|null $elements
@@ -31,7 +31,7 @@ class ElementDependencyProvider
     {
         $result = [];
         foreach ($elements as $element) {
-            $key = ElementDependencyProviderUtils::generateKey($element, $result);
+            $key = ElementDependencyProviderUtils::generateUniqueArrayKeyForElement($result, $element);
 
             $dependencies = $this->getDependenciesOf($element);
             if (!$dependencies) {

@@ -20,11 +20,13 @@ services:
 
     Factotum\SafeDeleteBundle\DTO\Element\ElementDataFactory: ~
 
-    Factotum\SafeDeleteBundle\DTO\JsInstruction\ParameterBasedJsInstructionDtoFactory: ~
+    Factotum\SafeDeleteBundle\Service\Validation\RequestValidator: ~
+
+    Factotum\SafeDeleteBundle\DTO\Validation\ValidationDtoFactory: ~
 
     Factotum\SafeDeleteBundle\Service\ElementFinder: ~
 
-    Factotum\SafeDeleteBundle\Service\ParameterBasedJsInstructionResolver: ~
+    Factotum\SafeDeleteBundle\Service\Validation\RequestBasedJsInstructionResolver: ~
 
     Factotum\SafeDeleteBundle\Service\Provider\Element\:
         resource: '../src/Service/Provider/Element/'
