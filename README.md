@@ -26,7 +26,7 @@ Add the following repository to the `composer.json` of your Pimcore project:
 "repositories": [
     {
         "type": "vcs",
-        "url": "git@github.com:girgl773/pimcore-safe-delete-bundle.git"
+        "url": "git@github.com:Girgl1995/pimcore-safe-delete-bundle.git"
     }
 ]
 ```
