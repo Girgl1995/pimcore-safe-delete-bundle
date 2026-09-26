@@ -1,0 +1,33 @@
+{
+  "name": "factotum/safe-delete-bundle",
+  "type": "pimcore-bundle",
+  "description": "Extends Pimcore's delete functionality to display element dependencies before deletion",
+  "keywords": [
+    "pimcore",
+    "pimcore-bundle",
+    "safe-delete",
+    "delete-protection",
+    "dependency-check",
+    "references",
+    "dependencies",
+    "factotum",
+    "open-source",
+    "girgl"
+  ],
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Girgl1995",
+      "email": "girgl1995@proton.me",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "pimcore/pimcore": "^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Factotum\\SafeDeleteBundle\\": "src/"
+    }
+  }
+}

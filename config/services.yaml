@@ -1,0 +1,37 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Factotum\SafeDeleteBundle\Controller\:
+        resource: '../src/Controller'
+        public: true
+        tags: [ 'controller.service_arguments' ]
+
+    Factotum\SafeDeleteBundle\Installer:
+        public: true
+
+    Factotum\SafeDeleteBundle\EventSubscriber\AdminAssetSubscriber: ~
+
+    Factotum\SafeDeleteBundle\Config\SafeDeleteConfig: ~
+
+    Factotum\SafeDeleteBundle\DTO\Element\ElementDataFactory: ~
+
+    Factotum\SafeDeleteBundle\Service\Validation\RequestValidator: ~
+
+    Factotum\SafeDeleteBundle\DTO\Validation\ValidationDtoFactory: ~
+
+    Factotum\SafeDeleteBundle\Service\ElementFinder: ~
+
+    Factotum\SafeDeleteBundle\Service\Validation\RequestBasedJsInstructionResolver: ~
+
+    Factotum\SafeDeleteBundle\Service\Provider\Element\:
+        resource: '../src/Service/Provider/Element/*Provider.php'
+        tags: [ 'element.provider' ]
+
+    Factotum\SafeDeleteBundle\Service\Provider\Element\Factory\ElementProviderFactory:
+        arguments:
+            $providers: !tagged_iterator element.provider
+
+    Factotum\SafeDeleteBundle\Service\Provider\Dependency\ElementDependencyProvider: ~
