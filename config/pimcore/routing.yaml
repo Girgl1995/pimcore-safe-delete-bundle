@@ -1,0 +1,3 @@
+safe_delete:
+    resource: "../../src/Controller/"
+    type: attribute

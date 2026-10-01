@@ -1,0 +1,38 @@
+.open-object-button,
+.open-object-button {
+    color: black !important;
+    background-color: white;
+    border: 0.5px solid #ccc !important;
+}
+
+.open-object-button,
+.open-object-button:hover,
+.open-object-button .x-btn-button {
+    background-color: white !important;
+}
+
+.open-object-button,
+.open-object-button .x-btn-inner {
+    color: black;
+}
+
+.object-path-label__key {
+    color: #6b7280;
+    font-weight: 600;
+    margin: 8px 5px 5px 10px;
+}
+
+.object-path-label__path {
+    color: #374151;
+    margin: 8px 0px 5px 0px;
+}
+
+.object-path-label__value {
+    color: #4f46e5;
+    font-weight: 600;
+    margin: 8px 0px 0px 0px;
+}
+
+.object-path-scroll-container {
+    scrollbar-width: thin !important;
+}

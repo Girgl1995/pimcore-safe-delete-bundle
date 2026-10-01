@@ -1,0 +1,5 @@
+safe_delete: Safe Delete
+open_object: Open Element
+invalid_id_error_message: 'Invalid ID: %s'
+invalid_type_error_message: 'Invalid Type: %s'
+element_not_found_error_message: 'No element found with ID: %s'

@@ -1,0 +1,2 @@
+factotum_safe_delete:
+    include_children: true
